@@ -9,6 +9,18 @@ DOWNLOAD_DIR="./downloads"
 
 mkdir -p "$DOWNLOAD_DIR"
 
+jq_validator() {
+
+    dpkg --list | awk '{print $2}' | grep -w 'jq' 2>&1 >/dev/null
+    validator=$(echo $?)
+    if [[ "$validator" = 1 ]]; then
+         echo -e "jq no esta instalado en el sistema.\nInstalacion: sudo apt install jq -y"
+         exit
+    fi
+}
+
+jq_validator
+
 process_updates() {
     local response=$(curl -s "$API_URL/getUpdates?offset=$OFFSET&timeout=$TIMEOUT")
     
